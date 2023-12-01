@@ -1,51 +1,35 @@
 import { getInput } from '../utils/getInput';
 
 const numbers = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-const numbersReverse = numbers.map((s) => s.split('').reverse().join(''));
 
-function findFirstDigit(
-    str: string,
-    options: { findNumberWords: boolean; checkReversedWords: boolean } = {
-        findNumberWords: false,
-        checkReversedWords: false,
-    },
-): number {
-    const digitMatch = /\d/.exec(str) as RegExpExecArray;
-
-    if (options.findNumberWords) {
-        const wordMatch = new RegExp(
-            (options.checkReversedWords ? numbersReverse : numbers).join('|'),
-        ).exec(str);
-
-        if (!digitMatch || (wordMatch && wordMatch.index < digitMatch.index)) {
-            return (options.checkReversedWords ? numbersReverse : numbers).indexOf(wordMatch![0]);
-        }
-    }
-
-    return parseInt(digitMatch[0], 10);
-}
-
-async function solution(): Promise<void> {
+async function solution() {
     const input = await getInput();
 
     // Part 1 solution
-    const part1 = input.reduce((acc, cur) => {
-        const first = findFirstDigit(cur);
-        const last = findFirstDigit(cur.split('').reverse().join(''));
-
+    const part1 = input.reduce((acc, curr) => {
+        const digits = curr
+            .split('')
+            .map(Number)
+            .filter((n) => !isNaN(n));
+        const [first, last] = [digits[0], digits[digits.length - 1]];
         return acc + Number(`${first}${last}`);
     }, 0);
 
     console.log(`Part 1 solution: ${part1}`);
 
     // Part 2 solution
-    const part2 = input.reduce((acc, cur) => {
-        const first = findFirstDigit(cur, { findNumberWords: true, checkReversedWords: false });
-        const last = findFirstDigit(cur.split('').reverse().join(''), {
-            findNumberWords: true,
-            checkReversedWords: true,
-        });
+    const part2 = input.reduce((acc, curr) => {
+        const re = /(?=(\d|one|two|three|four|five|six|seven|eight|nine))\1/g;
+        const digits = [];
+        let match: RegExpExecArray | null;
 
+        while ((match = re.exec(curr)) !== null) {
+            const wordMatch = numbers.findIndex((n) => n === match![0]);
+            digits.push(wordMatch === -1 ? Number(match![0]) : wordMatch);
+            re.lastIndex = match.index + 1;
+        }
+
+        const [first, last] = [digits[0], digits[digits.length - 1]];
         return acc + Number(`${first}${last}`);
     }, 0);
 
