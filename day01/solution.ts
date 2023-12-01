@@ -33,7 +33,7 @@ async function solution(): Promise<void> {
         const first = findFirstDigit(cur);
         const last = findFirstDigit(cur.split('').reverse().join(''));
 
-        return acc + Number(`${first as number}${last as number}`);
+        return acc + Number(`${first}${last}`);
     }, 0);
 
     console.log(`Part 1 solution: ${part1}`);
