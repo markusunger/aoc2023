@@ -9,20 +9,16 @@ function findFirstDigit(
         findNumberWords: false,
         checkReversedWords: false,
     },
-): number | undefined {
+): number {
     const digitMatch = /\d/.exec(str) as RegExpExecArray;
-    console.log({ options, digitMatch, str });
+
     if (options.findNumberWords) {
         const wordMatch = new RegExp(
             (options.checkReversedWords ? numbersReverse : numbers).join('|'),
-        ).exec(str) as RegExpExecArray;
-        console.log({ wordMatch });
+        ).exec(str);
 
-        if (
-            wordMatch &&
-            wordMatch.index < (digitMatch ?? { index: Number.MAX_SAFE_INTEGER }).index
-        ) {
-            return (options.checkReversedWords ? numbersReverse : numbers).indexOf(wordMatch[0]);
+        if (!digitMatch || (wordMatch && wordMatch.index < digitMatch.index)) {
+            return (options.checkReversedWords ? numbersReverse : numbers).indexOf(wordMatch![0]);
         }
     }
 
@@ -50,7 +46,7 @@ async function solution(): Promise<void> {
             checkReversedWords: true,
         });
 
-        return acc + Number(`${first as number}${last as number}`);
+        return acc + Number(`${first}${last}`);
     }, 0);
 
     console.log(`Part 2 solution: ${part2}`);
