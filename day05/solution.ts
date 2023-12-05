@@ -45,16 +45,13 @@ async function solution() {
     const getLowestLocation = (seeds: number[]) =>
         seeds.reduce((lowestLocation, seed) => {
             const location = maps.reduce((source, map) => {
-                // console.log(`Checking ${source} in map ${JSON.stringify(map)}`);
                 const fittingMap = map.find(
                     (range) => range.source <= source && range.source + range.length > source,
                 );
                 if (!fittingMap) {
-                    // console.log(`${source} -> ${source}`);
                     return source;
                 }
                 const destination = fittingMap.destination + (source - fittingMap.source);
-                // console.log(`${source} -> ${destination}`);
                 return destination;
             }, seed);
 
@@ -68,14 +65,12 @@ async function solution() {
 
     console.log('Part 1 solution:', lowestLocation);
 
-    const time = performance.now();
     const [seedRanges] = parseInput(structuredClone(input), true);
 
     const lowestLocationPart2 = (seedRanges as number[][]).reduce((lowestLocation, seedRange) => {
         let localLow = Infinity;
 
         for (let i = seedRange[0]; i < seedRange[0] + seedRange[1]; i += 1) {
-            // console.log(`Testing seed ${i}`);
             const location = getLowestLocation([i]);
             if (location < localLow) {
                 localLow = location;
