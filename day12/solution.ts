@@ -51,7 +51,7 @@ function getTotalValidCombinations(conditionRecords: { condition: string; groups
 }
 
 async function solution() {
-    const input = await getInput({ test: true });
+    const input = await getInput();
 
     const conditionRecords = input.map((line) => ({
         condition: line.split(' ')[0],
